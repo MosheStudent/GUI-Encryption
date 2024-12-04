@@ -1,26 +1,43 @@
 import tkinter
+import sym
 
-encType = ["Symmetry", "Asymmetry"]
+#sym class init
+cipher = sym.Sym()
 
+#calls to sym class
+def enc():
+    pass
+
+def dec():
+    pass
+
+
+#window startup
 root = tkinter.Tk()
 root.geometry("400x400")
-root.title("Encryption")
+header = root.title("Cipher Tool")
 
+#encryption or decryption
+choices = ["Encrypt", "Decrypt"]
+initVal = tkinter.StringVar(root)
+initVal.set(choices[0])
+choiceBox = tkinter.OptionMenu(root, initVal, *choices)
+choiceBox.pack(pady= 20)
 
-text = tkinter.Label(root, text="Encryption method: ")
-text.pack()
+#text label
+text1 = tkinter.Label(root, text="Enter message:")
+text1.pack(pady=25)
 
-typeBox = tkinter.OptionMenu(root, tkinter.StringVar(root), *encType)
-typeBox.pack()
+#Input line
+entryLine = tkinter.Entry(root)
+entryLine.pack(padx=40)
 
-text2 = tkinter.Label(root, text="Enter text:")
-text2.pack()
+#inputButton
+button = tkinter.Button(text="Enter", command=funct)
+button.pack()
 
-inputText = tkinter.Entry(root)
-inputText.pack()
-
-text3 = tkinter.Label(root, text = "The Encrypted text:")
-text3.pack()
+#Output label
+text2 = tkinter.Label(root, text="OutPut:")
+text2.pack(pady=50)
 
 root.mainloop()
-

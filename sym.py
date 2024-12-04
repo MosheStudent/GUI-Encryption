@@ -1,47 +1,37 @@
 import random
 
 class Sym:
-    def __init__(self, text, cType):
-        self.key = random.randint(1, 26)
-        self.text = text
-        self.cType = cType
+    def __init__(self):
+        self.key = random.randint(1, 93)
 
-    def cipher(self): # Ceaser cipher:
+    def cipher(self, text): # Ceaser cipher:
         ascText = ""
 
-        for c in self.text:
+        for c in text:
             asc = ord(c) + self.key
-            
-            if (asc > 126):
-                asc -= 126
-            
-            if (asc < 33):
-                asc 
 
+            if (asc > 126):
+                asc = (asc - 127) + 33
 
             ascText += chr(asc)
 
-        print (ascText)
         return ascText
     
     def dec(self, text):
         decScript = ""
 
         for c in text:
-            decScript += chr(ord(c) - self.key)
-        print (decScript)
+            ret = ord(c) - self.key
 
-33-126
+            if (ret < 32):
+                ret += 94
+
+            decScript += chr(ret)
+            
+        return decScript
+
     
-    
-i = input("> ")
-c = Sym(i, 4)
 
-e = c.cipher()
-c.dec(e)
-
-
-#33-126 ascii
 
 
 
