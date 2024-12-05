@@ -12,7 +12,26 @@ class MainWIn:
         self.root = tkinter.Tk()
         self.encTypes = ["CEASER", "RSA"]
         self.convTypes = ["ENCRYPT", "DECRYPT"]
-        
+
+        #selected encType
+        self.sysVar = tkinter.StringVar(self.root)
+        self.sysVar.set(self.encTypes[0])
+
+        #selected convType
+        self.convVar = tkinter.StringVar(self.root)
+        self.convVar.set(self.convTypes[0])
+
+        #input from entry fields:
+        self.box = tkinter.Entry()
+        self.data = ''
+
+        #input keys:
+        self.box1 = tkinter.Entry()
+        self.box2 = tkinter.Entry()
+        self.key1 = ''
+        self.key2 = ''
+
+
         #window Setup Funcs
         self.winSetup()
         self.menuSetup()
@@ -24,18 +43,36 @@ class MainWIn:
 
         self.root.mainloop()
 
+    def printEnc(self):
+        s = sym.Sym()
+        t  = s.enc(self.data)
+
+        l = tkinter.Label(text=t)
+        l.pack()
+
+        l2 = tkinter.Label(text=f'key: {s.key}')
+        l2.pack()
+
+    def controlCenter(self):
+        #updates entry fields to variable
+        self.data = self.box.get()
+        self.key1 = self.box1.get()
+        self.key2 = self.box2.get()
+
+        if (str(self.sysVar.get()) == self.encTypes[0]):
+            if (str(self.convVar.get()) == self.convTypes[0]):
+                self.printEnc()
+        else:
+            pass
+
     def encryptionType(self):
         #asm or sym
-        optionVar = tkinter.StringVar(self.root)
-        optionVar.set(self.encTypes[0])
-        dropdown = tkinter.OptionMenu(self.root, optionVar, *self.encTypes)
+        dropdown = tkinter.OptionMenu(self.root, self.sysVar, *self.encTypes)
         dropdown.pack()
 
     def encrypt_or_decrypt(self):
         #dropdown for encryption or decryption:
-        optionVar = tkinter.StringVar(self.root)
-        optionVar.set(self.convTypes[0])
-        dropdown = tkinter.OptionMenu(self.root, optionVar, *self.convTypes)
+        dropdown = tkinter.OptionMenu(self.root, self.convVar, *self.convTypes)
         dropdown.pack()
 
     def enterBox(self):
@@ -43,22 +80,18 @@ class MainWIn:
         label = tkinter.Label(text="Enter data:")
         label.pack()
 
-        box = tkinter.Entry()
-        box.pack()
+        self.box.pack()
 
     def keyBox(self):
         #key enter fields
         label = tkinter.Label(text="Key (only for decryption):")
         label.pack()
 
-        box1 = tkinter.Entry()
-        box2 = tkinter.Entry()
-
-        box1.pack()
-        box2.pack()
+        self.box1.pack()
+        self.box2.pack()
 
     def enterButton(self):
-        button = tkinter.Button(text="enter")
+        button = tkinter.Button(text="enter", command=self.controlCenter)
         button.pack()
         
 
