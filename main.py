@@ -5,11 +5,28 @@ import sym
 cipher = sym.Sym()
 
 #calls to sym class
-def enc():
-    pass
+def enc(msg):
+    textval.set(f'{cipher.cipher(msg)} \t key={cipher.key}')
 
-def dec():
-    pass
+def dec(msg):
+    text3 = tkinter.Label(root, text="Enter key: ")
+    text3.pack()
+
+    
+    inputLine = tkinter.Entry(root)
+    inputLine.pack()
+
+    
+    def write():
+        textval.set(cipher.dec(msg, inputLine.get()))
+        button2.destroy()
+        inputLine.destroy()
+        text3.destroy()
+
+
+
+    button2 = tkinter.Button(root, text="Enter", command=write)
+    button2.pack()
 
 
 #window startup
@@ -32,12 +49,24 @@ text1.pack(pady=25)
 entryLine = tkinter.Entry(root)
 entryLine.pack(padx=40)
 
+#output label
+textval = tkinter.StringVar(root)
+outputLine = tkinter.Label(root, textvariable=textval)
+outputLine.pack(pady=20)
+
+#directs to decypher or to encrypt
+def commandCenter():
+    if (initVal.get() == choices[0]):
+        enc(entryLine.get())
+
+    else:
+        dec(entryLine.get())
+
 #inputButton
-button = tkinter.Button(text="Enter", command=funct)
+button = tkinter.Button(text="Enter", command=commandCenter)
 button.pack()
 
-#Output label
-text2 = tkinter.Label(root, text="OutPut:")
-text2.pack(pady=50)
 
 root.mainloop()
+
+#if __name__ == "main"
