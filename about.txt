@@ -1,0 +1,13 @@
+RSA is an encryption algorithm.
+It is asymmetrical, and based on prime numbers including 
+advanced arithmetic.
+
+Ceaser Cipher is an ancient encryption algorithm, 
+it is simple - therefore easy to breach.
+
+
+
+
+
+
+2024 Moshe Bekritksy
