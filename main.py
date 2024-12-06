@@ -21,6 +21,10 @@ class MainWIn:
         self.convVar = tkinter.StringVar(self.root)
         self.convVar.set(self.convTypes[0])
 
+        #output text var
+        self.dataLabel = tkinter.Label(text='')
+        self.dataKeyLabel = tkinter.Label(text='')
+
         #input from entry fields:
         self.box = tkinter.Entry()
         self.data = ''
@@ -31,6 +35,8 @@ class MainWIn:
         self.key1 = ''
         self.key2 = ''
 
+        #import/export
+        self.Import = False
 
         #window Setup Funcs
         self.winSetup()
@@ -43,27 +49,96 @@ class MainWIn:
 
         self.root.mainloop()
 
-    def printEnc(self):
-        s = sym.Sym()
-        t  = s.enc(self.data)
+    def errorWindow(self):
+        error_window = tkinter.Toplevel(self.root)
+        error_window.title("Error")
+        error_window.geometry('100x100')
 
-        l = tkinter.Label(text=t)
-        l.pack()
+        message = tkinter.Label(error_window, text="Error")
+        message.pack()
 
-        l2 = tkinter.Label(text=f'key: {s.key}')
-        l2.pack()
+    def printEncSM(self):
+        try:
+            #encrypts and prints ceaser cipher
+            s = sym.Sym()
+            t  = s.enc(self.data)
+
+            self.dataLabel.config(text=t)
+            self.dataKeyLabel.config(text=f'key: {s.key}')
+
+            self.dataKeyLabel.pack()
+            self.dataLabel.pack()
+
+        except:
+            self.errorWindow()
+
+    def printEncASM(self):
+        try:
+            #prints and encryptss rsa cipher
+            a = asm.RSA()
+            t = a.enc(self.data)
+
+            self.dataLabel.config(text=t)
+            self.dataKeyLabel.config(text=f'key e: {a.e}, key n: {a.n}')
+
+            self.dataKeyLabel.pack()
+            self.dataLabel.pack()
+
+        except:
+            self.errorWindow()
+
+    def printDecSM(self):
+        try:
+            #decrypts and prints ceaser cipher
+            s = sym.Sym()
+
+            t = s.dec(self.data, self.key1)
+
+            self.dataLabel.config(text=t)
+            self.dataKeyLabel.config(text=f'key: {self.key1}')
+            
+            self.dataLabel.pack()
+            self.dataKeyLabel.pack()
+
+        except:
+            self.errorWindow()
+         
+    def printDecASM(self):
+        try:
+            a = asm.RSA()
+
+            t = a.dec(self.data, int(self.key1), int(self.key2))
+
+            self.dataLabel.config(text=t)
+            self.dataKeyLabel.config(text=f'key: p: {self.key1}, q: {self.key2}')
+            
+            self.dataLabel.pack()
+            self.dataKeyLabel.pack()
+            
+        except:
+            self.errorWindow()
+
+
 
     def controlCenter(self):
         #updates entry fields to variable
-        self.data = self.box.get()
+        if (self.Import == False or self.box.get() != ''):
+            self.data = self.box.get()
+
         self.key1 = self.box1.get()
         self.key2 = self.box2.get()
 
         if (str(self.sysVar.get()) == self.encTypes[0]):
             if (str(self.convVar.get()) == self.convTypes[0]):
-                self.printEnc()
+                self.printEncSM()
+            else:
+                self.printDecSM()
         else:
-            pass
+            if (str(self.convVar.get()) == self.convTypes[0]):
+                self.printEncASM()
+            else:
+                self.printDecASM()
+            
 
     def encryptionType(self):
         #asm or sym
@@ -113,7 +188,7 @@ class MainWIn:
 
         helpMenu.add_command(label='About', command=self.readMe)
         filemenu.add_command(label='Import', command=self.browseFiles)
-        filemenu.add_command(label='Export', command=self.browseFiles)
+        filemenu.add_command(label='Export', command=self.exportFiles)
 
     def readMe(self):
         new_window = tkinter.Toplevel(self.root)
@@ -132,6 +207,31 @@ class MainWIn:
         title = "Select a File",
         filetypes = (("Text files","*.txt*"),("all files", "*.*")))
 
+        if filename:
+            try:
+                file = open(filename, "r")
+                self.data = file.read()
+                file.close()
+
+                if (self.box.get() == ''):
+                    self.Import = True
+            
+            except:
+                self.errorWindow()
+
+    def exportFiles(self):
+        filename = tkinter.filedialog.asksaveasfilename(title='Save as', 
+        defaultextension=".txt", 
+        filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])
+
+        if filename:
+            try:
+                f = open(filename, "w")
+                f.write(self.dataLabel.cget("text"))
+                f.close()
+
+            except:
+                self.errorWindow()
 
 r = MainWIn()
 
