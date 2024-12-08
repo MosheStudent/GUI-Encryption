@@ -102,6 +102,7 @@ class RSA:
         encText = ""
 
 
+
         for char in text:
 
             encText += str((ord(char) ** self.e) % self.n) + "|"
@@ -111,34 +112,25 @@ class RSA:
         
         
 
-    #decodes given text with q and p values, and returns
+    #decodes given text with q and p values, and return
     def dec(self, text, q, p):
-
         DefChar = ''
-
         decString = ""
 
-
+        # Calculate the decryption exponent
         d = mod_inverse(self.e, ((q-1) * (p-1)))
 
+        # Split the encrypted text using '|' as delimiter
+        encrypted_values = text.split('|')
 
-
-        for char in text:
-
-            if (char == '|'):
-
-                decString += chr((int(DefChar) ** d ) % self.n) 
-
-                DefChar = ''
-
-
-            else:
-
-                DefChar += str(char)
-
+        for value in encrypted_values:
+            if value:  # Ignore empty values from splitting
+                # Convert each encrypted value back to the character
+                decString += chr((int(value) ** d) % self.n)
 
         return decString
-                
+
+
 
 
                 

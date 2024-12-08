@@ -47,7 +47,34 @@ class MainWIn:
         self.keyBox()
         self.enterButton()
 
+        #update key button:
+        self.updateKeyButton()
+
+        #enc objects:
+        self.a = asm.RSA()
+
+        self.b = sym.Sym()
+
+
+        #main loop run:
         self.root.mainloop()
+
+    def updateKey(self):
+        if (self.sysVar.get() == "CEASER"):
+            self.b = sym.Sym()
+
+            self.dataKeyLabel.config(text=self.b.key)
+            self.dataKeyLabel.pack()
+
+        
+        else:
+            self.a = asm.RSA()
+            self.dataKeyLabel.config(text=self.a.n)
+            self.dataKeyLabel.pack()
+
+    def updateKeyButton(self):
+        button = tkinter.Button(text="Update Keys", command=self.updateKey)
+        button.pack()
 
     def errorWindow(self):
         error_window = tkinter.Toplevel(self.root)
@@ -60,11 +87,10 @@ class MainWIn:
     def printEncSM(self):
         try:
             #encrypts and prints ceaser cipher
-            s = sym.Sym()
-            t  = s.enc(self.data)
+            t  = self.b.enc(self.data)
 
             self.dataLabel.config(text=t)
-            self.dataKeyLabel.config(text=f'key: {s.key}')
+            self.dataKeyLabel.config(text=f'key: {self.b.key}')
 
             self.dataKeyLabel.pack()
             self.dataLabel.pack()
@@ -73,26 +99,26 @@ class MainWIn:
             self.errorWindow()
 
     def printEncASM(self):
-        try:
+        #try:
             #prints and encryptss rsa cipher
-            a = asm.RSA()
-            t = a.enc(self.data)
+        t = self.a.enc(self.data)
 
-            self.dataLabel.config(text=t)
-            self.dataKeyLabel.config(text=f'key e: {a.e}, key n: {a.n}')
+        self.dataLabel.config(text=t)
+        self.dataKeyLabel.config(text=f'key e: {self.a.e}, key n: {self.a.n}')
 
-            self.dataKeyLabel.pack()
-            self.dataLabel.pack()
+        self.dataKeyLabel.pack()
+        self.dataLabel.pack()
 
-        except:
-            self.errorWindow()
+        print (self.a.p)
+        print(self.a.q)
+
+
+        #except:
+            #self.errorWindow()
 
     def printDecSM(self):
         try:
-            #decrypts and prints ceaser cipher
-            s = sym.Sym()
-
-            t = s.dec(self.data, self.key1)
+            t = self.b.dec(self.data, self.key1)
 
             self.dataLabel.config(text=t)
             self.dataKeyLabel.config(text=f'key: {self.key1}')
@@ -105,9 +131,7 @@ class MainWIn:
          
     def printDecASM(self):
         try:
-            a = asm.RSA()
-
-            t = a.dec(self.data, int(self.key1), int(self.key2))
+            t = self.a.dec(str(self.data), int(self.key1), int(self.key2))
 
             self.dataLabel.config(text=t)
             self.dataKeyLabel.config(text=f'key: p: {self.key1}, q: {self.key2}')
