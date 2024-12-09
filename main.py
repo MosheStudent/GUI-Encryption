@@ -21,9 +21,29 @@ class MainWIn:
         self.convVar = tkinter.StringVar(self.root)
         self.convVar.set(self.convTypes[0])
 
-        #output text var
-        self.dataLabel = tkinter.Label(text='')
+        #output key var
         self.dataKeyLabel = tkinter.Label(text='')
+
+        #Output Label:
+        label = tkinter.Label(text="OUTPUT:")
+        label.pack()
+
+        #frame to hold text widget and scroll bar:
+        frame = tkinter.Frame(self.root)
+        frame.pack(padx=10, pady=10, expand=True, fill=tkinter.BOTH)
+
+        #output text widget with screen wrap 
+        self.textBox = tkinter.Text(frame, wrap=tkinter.WORD, width=40, height=10)
+        self.textBox.pack(side=tkinter.LEFT, padx=0, pady=0, expand=True, fill=tkinter.BOTH)
+
+
+        #scroll bar:
+        self.scrollBar = tkinter.Scrollbar(frame, command=self.textBox.yview)
+        self.scrollBar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
+
+        self.textBox.config(yscrollcommand=self.scrollBar.set)
+
+
 
         #input from entry fields:
         self.box = tkinter.Entry()
@@ -59,6 +79,10 @@ class MainWIn:
         #main loop run:
         self.root.mainloop()
 
+    def updateOutput(self, output):
+        self.textBox.delete("1.0", tkinter.END)
+        self.textBox.insert(tkinter.END, output)
+
     def updateKey(self):
         if (self.sysVar.get() == "CEASER"):
             self.b = sym.Sym()
@@ -79,7 +103,7 @@ class MainWIn:
     def errorWindow(self):
         error_window = tkinter.Toplevel(self.root)
         error_window.title("Error")
-        error_window.geometry('100x100')
+        error_window.geometry('300x300')
 
         message = tkinter.Label(error_window, text="Error")
         message.pack()
@@ -89,41 +113,34 @@ class MainWIn:
             #encrypts and prints ceaser cipher
             t  = self.b.enc(self.data)
 
-            self.dataLabel.config(text=t)
+            self.updateOutput(str(t))
             self.dataKeyLabel.config(text=f'key: {self.b.key}')
-
             self.dataKeyLabel.pack()
-            self.dataLabel.pack()
 
         except:
             self.errorWindow()
 
     def printEncASM(self):
-        #try:
-            #prints and encryptss rsa cipher
-        t = self.a.enc(self.data)
+        try:
+        #prints and encryptss rsa cipher
+            t = self.a.enc(self.data)
 
-        self.dataLabel.config(text=t)
-        self.dataKeyLabel.config(text=f'key e: {self.a.e}, key n: {self.a.n}')
+            self.updateOutput(str(t))
+            self.dataKeyLabel.config(text=f'key e: {self.a.e}, key n: {self.a.n}, p = {self.a.p}, q = {self.a.q}')
+            self.dataKeyLabel.pack()
 
-        self.dataKeyLabel.pack()
-        self.dataLabel.pack()
+            self.dataKeyLabel.pack()
 
-        print (self.a.p)
-        print(self.a.q)
-
-
-        #except:
-            #self.errorWindow()
+        except:
+            self.errorWindow()
 
     def printDecSM(self):
         try:
             t = self.b.dec(self.data, self.key1)
 
-            self.dataLabel.config(text=t)
+            self.updateOutput(str(t))
             self.dataKeyLabel.config(text=f'key: {self.key1}')
             
-            self.dataLabel.pack()
             self.dataKeyLabel.pack()
 
         except:
@@ -133,10 +150,9 @@ class MainWIn:
         try:
             t = self.a.dec(str(self.data), int(self.key1), int(self.key2))
 
-            self.dataLabel.config(text=t)
+            self.updateOutput(str(t))
             self.dataKeyLabel.config(text=f'key: p: {self.key1}, q: {self.key2}')
             
-            self.dataLabel.pack()
             self.dataKeyLabel.pack()
             
         except:
@@ -196,7 +212,7 @@ class MainWIn:
 
     def winSetup(self):
         #Basic window init:
-        self.root.geometry("400x400")
+        self.root.geometry("600x600")
         self.root.title("Encryption")
 
     def menuSetup(self):
@@ -239,6 +255,8 @@ class MainWIn:
 
                 if (self.box.get() == ''):
                     self.Import = True
+
+                self.updateOutput(self.data)
             
             except:
                 self.errorWindow()
@@ -251,13 +269,15 @@ class MainWIn:
         if filename:
             try:
                 f = open(filename, "w")
-                f.write(self.dataLabel.cget("text"))
+                f.write(self.textBox.get(1.0, "end-1c"))
                 f.close()
 
             except:
                 self.errorWindow()
 
-r = MainWIn()
+
+if __name__ == "__main__":
+    r = MainWIn()
 
 
 
